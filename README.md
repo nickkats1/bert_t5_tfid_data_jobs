@@ -3,15 +3,12 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nw9vjsx-qESPT1oCcv7Yj5X-Ra7ssRH2)
 
 
-
-This is from Kaggle, I usually do not share things from kaggle, but I like this so much. This brave, and hard-working individual, scrappred 1000 job postings relating to the following: Machine Learning Engineer, Data Science, Software Engineer, and 'other jobs'.
-
+This is from Kaggle, I usually do not share things from Kaggle, but I like this so much. This brave, and hard-working individual, scrapped 1000 job postings relating to the following job titles: Machine Learning Engineer, Data Science, Software Engineer, and 'other jobs'.
 
 ## Requirements
 ```bash
 pip install -r requirements.txt
 ```
-
 
 
 
@@ -71,15 +68,12 @@ def cleaning_job_titles(title):
         return "other jobs"
 ```
 
-
 ### Pie Chart of the Proportion of Job Titles
 ![piechart-data-jobs](images/piechart.png)
 
-
-### First, traditional NLP Strategies
+### First, traditional NLP strategies
 ```python
 df['Text'] = df['company_description'] + " ." + df["job_description_text"] + " ." + df['job_title']
-
 
 def clean_text(text):
     text = text.lower()
@@ -94,7 +88,6 @@ def clean_text(text):
 
     text=  " ".join(cleaned_tokens)
     return text
-
 
 df['clean_text'] = df['Text'].apply(clean_text)
 df['job_description_text'] = df['job_description_text'].apply(clean_text)
@@ -130,9 +123,7 @@ Name: clean_text, dtype: object
 #### First, traditional train/test split using sklearn's TfidVectorizer
 ```python
 
-
 le = LabelEncoder()
-
 
 X = df['clean_text']
 y = df['cleaned_jobs']
@@ -145,7 +136,6 @@ tfid = TfidfVectorizer()
 X_train_tfid = tfid.fit_transform(X_train).toarray()
 X_test_tfid = tfid.transform(X_test).toarray()
 
-
 models = {
 "multinomialnaivebayes":MultinomialNB(),
 "logisticregression":LogisticRegression(),
@@ -154,7 +144,6 @@ models = {
 "randomforestclf":RandomForestClassifier(),
 "baggingclassifier":BaggingClassifier(),
 }
-
 
 
 for model_name,model in models.items():
@@ -179,7 +168,6 @@ df_bert['Text'] = df_bert['cleaned_jobs'] + " ." + df_bert["job_description_text
 df_bert['Text'] = df_bert['Text'].fillna("")
 df_bert = df_bert[['Text','cleaned_jobs']]
 
-
 df_bert.head(10)
 
 df_bert['cleaned_jobs'].value_counts()
@@ -191,18 +179,16 @@ df_bert['other jobs'] = (df_bert['cleaned_jobs'] == "other jobs").astype(int)
 df_bert.drop("cleaned_jobs",axis=1,inplace=True)
 df_bert.head(10)
 ```
-* bert-base-base-uncased from Hugging Face and list to store the len of the sample tokens for a distriubtion pick the maximum sequence length to fine-tune bert.
+* bert-base-base-uncased from Hugging Face and list to store the length of the sample tokens for a distribution pick the maximum sequence length to fine-tune bert.
 
 ```python
 MODEL_NAME = "bert-base-uncased"
 tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
 
-
 sample_tokens = []
 for txt in df_bert['Text']:
     tokens = tokenizer.encode(txt,max_length=512)
     sample_tokens.append(len(tokens))
-
 
 plt.figure(figsize=(10,6))
 sns.distplot(sample_tokens)
@@ -216,7 +202,6 @@ plt.show()
 MAX_LEN = 400
 
 
-
 class Custom_Dataset(torch.utils.data.Dataset):
     def __init__(self,df_bert,labels,max_len,tokenizer):
         self.df_bert = df_bert
@@ -225,10 +210,8 @@ class Custom_Dataset(torch.utils.data.Dataset):
         self.max_len = max_len
         self.tokenizer=  tokenizer
 
-
     def __len__(self):
         return len(self.Text)
-
 
     def __getitem__(self, idx):
         Text = str(self.Text[idx])
@@ -254,10 +237,8 @@ class Custom_Dataset(torch.utils.data.Dataset):
             "targets":torch.FloatTensor(self.targets[idx])
             }
 
-
 df_train,df_test = train_test_split(df_bert,test_size=.20,random_state=42)
 df_val,df_test = train_test_split(df_test,test_size=.50,random_state=42)
-
 
 labels = list(df_bert.columns)
 labels = labels[1:]
@@ -271,7 +252,6 @@ TEST_BATCH_SIZE = 8
 VAL_BATCH_SIZE = 8
 learning_rate = 1e-5
 epochs = 4
-
 
 
 train_dataloader = torch.utils.data.DataLoader(train_dataset,batch_size=TRAIN_BATCH_SIZE,num_workers=4)
@@ -299,7 +279,7 @@ class BertClassifier(nn.Module):
 ```
 * Side-Note, for Bert, when it comes to Multi-Label Classification, I have noticed, it always better when p=0.1, instead of p=0.3 . Four is the number of target's, that is, the job-title's.
 
-### Training,Val, and testing accuracy and loss
+### Training, Val, and testing accuracy and loss
 ```text
 Training Accuracy: 99.85%; --Training Loss: 0.0753
 val_acc: 100.00%; val_loss: 0.0445
@@ -307,12 +287,12 @@ testing accuracy: 100.00%
 testing loss: 0.0481
 ```
 
-### Seperate DataFrame for T5 fine-tuning
+### Separate DataFrame for T5 fine-tuning
 ```python
 df_t5 = df.copy()
 df_t5 = df_t5[["job_description_text","company_description"]]
 ```
-### Job Description is the selected feature to be the Sum Text
+### Job Description is the selected feature to be used as the ‘Sum Text’
 ```python
 df_t5['job_description_text'] = "Summarize: " + df_t5['job_description_text']
 df_t5.head(10)
@@ -357,11 +337,7 @@ class Custom_Dataset(torch.utils.data.Dataset):
         }
 ```
 
-### The Remaining will be in a notebook on collab for the generate text from T5 in .csv file or maybe .txt I do not know right now
-
-
-
-
+### The rest is located in my notebooks folder and the Google Colab link
 
 
 
