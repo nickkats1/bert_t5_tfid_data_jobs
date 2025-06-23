@@ -1,4 +1,4 @@
-### Bert Data Jobs with T5 and other nlp teqniques
+### Bert Data Jobs with T5 and other nlp techniques
 * Colab Link
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nw9vjsx-qESPT1oCcv7Yj5X-Ra7ssRH2)
 
