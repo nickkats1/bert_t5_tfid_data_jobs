@@ -1,4 +1,9 @@
 ### Bert Data Jobs with T5 and other nlp teqniques
+* Colab Link
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1nw9vjsx-qESPT1oCcv7Yj5X-Ra7ssRH2)
+
+
+
 This is from Kaggle, I usually do not share things from kaggle, but I like this so much. This brave, and hard-working individual, scrappred 1000 job postings relating to the following: Machine Learning Engineer, Data Science, Software Engineer, and 'other jobs'.
 
 
@@ -10,8 +15,7 @@ pip install -r requirements.txt
 
 
 
-
-### The Job Titles were as follows
+### The Job Titles are as follows
 ```text
 job_title
 Machine Learning Engineer                                                           243
